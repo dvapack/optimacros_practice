@@ -31,8 +31,11 @@ class Validation():
     def validate_hyperparams(self, filepath: str):
         """
         Метод для валидации списка гиперпараметров
-        :param filepath: Список гиперпараметров, которые необходимо валидировать
+        :param filepath: Путь до файла csv с гиперпараметрами;
         """
+        self.__load_hyperparams(filepath)
+
+
 
 
 
