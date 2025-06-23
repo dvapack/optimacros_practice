@@ -1,0 +1,45 @@
+# Файлы, созданные Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Дистрибутивы и сборки
+*.egg-info/
+*.egg
+dist/
+build/
+*.so
+*.exe
+
+# Файлы кэша и журналы
+.pytest_cache/
+.cache/
+*.log
+*.sqlite
+
+# Виртуальное окружение
+venv/
+.env/
+.envrc
+.venv/
+
+# IDE и редакторы
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Прочие системные файлы
+.DS_Store
+Thumbs.db
+
+# Файлы зависимостей (если используете Poetry или Pipenv)
+Pipfile.lock
+poetry.lock
+
+# Конфигурационные файлы (по желанию)
+*.ini
+*.cfg
+
+.test/
+test/
