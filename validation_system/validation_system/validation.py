@@ -1,37 +1,3 @@
-import pandas as pd
-import json
-
-
-import pandas as pd
-import json
-
-
-class DataLoader():
-    """
-    Класс для загрузки данных из csv файла.
-    Методы в нём должны переопределяться под конкретный формат хранения данных в csv файле.
-    """
-    def __init__(self, filepath: str):
-        self.filepath = filepath
-
-    def load_hyperparams(self) -> tuple[list, list]:
-        """
-        Метод для загрузки гиперпараметров, полученных от OptiMacros
-        :return: Список моделей и список гиперпараметров
-        """
-        try:
-            data = pd.read_csv(self.filepath)
-            # переводим сразу из json в python-словари
-            data.loc[:, 'Params'] = data.loc[:, 'Params'].apply(json.loads)
-            models = data.iloc[:, 2].to_list()
-            hyperparams = []
-            for model in models:
-                model_info = data.loc[(data.Model == model), 'Params'].iloc[0]
-                hyperparams.append(model_info[model])
-            return models, hyperparams
-        except FileNotFoundError:
-            print(f"Такого файла не существует")
-    
 class Validation():
     """
     Класс для валидации гиперпараметров
@@ -714,7 +680,7 @@ class Validation():
                 raise ValueError("Не поддерживаемая модель")
 
 
-    def validate_hyperparams(self):
+    def __validate_hyperparams(self):
         """
         Метод для валидации списка гиперпараметров
         """
@@ -723,6 +689,15 @@ class Validation():
                 self.__validate_hyperparam(model, params)
             except ValueError as e:
                 print(e)
+
+    def get_validated_hyperparams(self) -> tuple[list, list]:
+        """
+        Геттер для получения валидированных гиперпараметров.
+        :return: Кортеж из двух списков (models, hyperparams)
+        """
+        self.__validate_hyperparams()
+        return self.models, self.hyperparams
+    
 
 
 
