@@ -190,7 +190,7 @@ class DataLoader():
                          "elastic_net", "huber", "lasso", "ransac", 
                          "ridge", "theil_sen", "catboost", 
                          "holt", "exp_smoothing", "holt_winters", 
-                         "sarima", "prophet"]
+                         "sarima", "prophet", "polynomial"]
         if isinstance(model, dict):
             model_name = list(model.keys())[0] # т.к возвращается итерируемый объект
             params = list(model.values())[0]

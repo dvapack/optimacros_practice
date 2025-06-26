@@ -13,6 +13,7 @@ class Validation():
     def __check_lists_equal(self, list_a: list, list_b: list):
         """
         Метод для проверки эквивалентности двух списков (порядок не важен)
+
         :param list_a: Первый список для сравнения;
         :param list_b: Второй список для сравнения.
         """
@@ -22,6 +23,7 @@ class Validation():
     def __check_list_is_subset(self, list_a: list, list_b: list):
         """
         Метод для проверки, что один список является подмножеством другого списка
+
         :param list_a: Исходный список;
         :param list_b: Список для проверки, является ли он подмножеством.
         """
@@ -31,6 +33,7 @@ class Validation():
     def __strong_check_value(self, number, left_border, right_border):
         """
         Метод для проверки, что число строго находится в допустимом диапазоне, т.е > или <
+
         :param number: Число для проверки;
         :param left_boarder: Левая граница проверки;
         :param right_border: Правая граница проверки;
@@ -41,6 +44,7 @@ class Validation():
     def __check_value(self, number, left_border, right_border):
         """
         Метод для проверки, что число находится в допустимом диапазоне, т.е >= или <=.
+
         :param number: Число для проверки;
         :param left_boarder: Левая граница проверки;
         :param right_border: Правая граница проверки;
@@ -52,6 +56,7 @@ class Validation():
         """
         Метод для проверки, что числа в списке строго находятся в допустимом диапазоне (> и <). Если это не так,
         число заменяется на стандартное значение
+
         :param list: Список чисел для проверки;
         :param left_boarder: Левая граница проверки;
         :param right_border: Правая граница проверки;
@@ -67,6 +72,7 @@ class Validation():
         """
         Метод для проверки, что числа в списке находятся в допустимом диапазоне (>= и <=). Если это не так,
         число заменяется на стандартное значение
+
         :param list: Список чисел для проверки;
         :param left_boarder: Левая граница проверки;
         :param right_border: Правая граница проверки;
@@ -81,6 +87,7 @@ class Validation():
     def __croston_tsb(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Croston TSB
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["croston_tsb_min_alpha", "croston_tsb_max_alpha", 
@@ -119,6 +126,7 @@ class Validation():
     def __elastic_net(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Elastic Net
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["elastic_net_min_alpha", "elastic_net_max_alpha", 
@@ -157,6 +165,7 @@ class Validation():
     def __exp_smoothing(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Expontetial Smoothing
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["exp_smoothing_min_alpha", "exp_smoothing_max_alpha", 
@@ -184,6 +193,7 @@ class Validation():
     def __holt(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Holt
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["holt_min_alpha", "holt_max_alpha",
@@ -219,9 +229,11 @@ class Validation():
         provided_step = [data.get("holt_step")]
         self.__check_values(provided_step, min_step, max_step, default_step) 
 
+#### переделать метод для holt_winters
     def __holt_winters(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Holt Winters
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["holt_winters_min_seasonality", "holt_winters_max_seasonality",
@@ -240,6 +252,7 @@ class Validation():
     def __huber(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Huber
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["huber_min_degrees", "huber_max_degrees"]
@@ -260,6 +273,7 @@ class Validation():
     def __lasso(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Lasso
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["lasso_min_alpha", "lasso_max_alpha", 
@@ -287,6 +301,7 @@ class Validation():
     def __polynomial(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Polynomial
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["polynomial_min_degrees", "polynomial_max_degrees"]
@@ -307,6 +322,7 @@ class Validation():
     def __ransac(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Ransac
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["ransac_min_degrees", "ransac_max_degrees"]
@@ -327,6 +343,7 @@ class Validation():
     def __ridge(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Ridge
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["ridge_min_alpha", "ridge_max_alpha", 
@@ -354,6 +371,7 @@ class Validation():
     def __rol_mean(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Rol Mean
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["rol_mean_min_window_size", "rol_mean_max_window_size", 
@@ -385,6 +403,7 @@ class Validation():
     def __theil_sen(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Theil Sen
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["theil_sen_min_degrees", "theil_sen_max_degrees"]
@@ -405,6 +424,7 @@ class Validation():
     def __const(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Const
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["type"]
@@ -418,6 +438,7 @@ class Validation():
     def __sarima(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Sarima
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["min_p", "max_p", "min_d", "max_d", "min_q",
@@ -490,6 +511,7 @@ class Validation():
     def __prophet(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Prophet
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["seasonality_mode", "changepoint_prior_scale", 
@@ -517,6 +539,7 @@ class Validation():
     def __is_valid_max_features(self, max_features):
         """
         Метод для проверки гиперпараметра max_features в модели Random Forest
+
         :param max_features: Значение гиперпараметра.
         """
         if isinstance(max_features, int):
@@ -534,6 +557,7 @@ class Validation():
         """
         Метод для проверки, что элементы в списке доступны для использования в качестве
         значения гиперпараметра max_features в модели Random Forest.
+
         :param list: Список чисел для проверки;
         :param default_value: Стандартное значение для замены некорректных данных.
         """
@@ -546,6 +570,7 @@ class Validation():
     def __random_forest(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Random Forest
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["max_features", "n_estimators", "max_depth",
@@ -587,6 +612,7 @@ class Validation():
     def __catboost(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Catboost
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["learning_rate", "n_estimators", "depth"]
@@ -616,6 +642,7 @@ class Validation():
     def __symfit_fourier_fft(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Symfit Fourier FFT
+
         :param data: Гиперпараметры модели для валидации 
         """
         default_params = ["min_components", "max_components"]
@@ -637,6 +664,7 @@ class Validation():
     def __validate_hyperparam(self, model: str, param: dict):
         """
         Метод для валидации одного конкретного гиперпараметра
+
         :param param: Словарь из одного элемента с данными конкретного запуска модели
         """
         match model:
@@ -693,6 +721,7 @@ class Validation():
     def get_validated_hyperparams(self) -> tuple[list, list]:
         """
         Геттер для получения валидированных гиперпараметров.
+        
         :return: Кортеж из двух списков (models, hyperparams)
         """
         self.__validate_hyperparams()
