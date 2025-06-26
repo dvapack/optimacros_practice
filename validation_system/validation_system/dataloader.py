@@ -1,6 +1,7 @@
 import pandas as pd
 import json
 import os
+from datetime import datetime
 
 import joblib
 
@@ -9,6 +10,8 @@ from sklearn.linear_model import ElasticNet, HuberRegressor, Lasso, \
 from sklearn.ensemble import RandomForestRegressor
 from catboost import CatBoostRegressor
 from statsmodels.tsa.api import Holt, SimpleExpSmoothing, ExponentialSmoothing, SARIMAX
+from prophet import Prophet
+from prophet.serialize import model_to_json
 
 
 class DataLoader():
@@ -16,19 +19,22 @@ class DataLoader():
     Класс для работы с загрузкой и выгрузкой гиперпараметров моделей и самих экземпляров обученных моделей.
     """
     def __init__(self, filepath: str):
+        """
+        :param filepath: Путь до файла
+        """
         self.filepath = filepath
-        pass
 
     def load_hyperparams_from_optimacros(self) -> tuple[list, list]:
         """
         Метод для загрузки гиперпараметров, полученных от OptiMacros
+
         :return: Список моделей и список гиперпараметров
         """
         try:
             data = pd.read_csv(self.filepath)
             # переводим сразу из json в python-словари
             data.loc[:, 'Params'] = data.loc[:, 'Params'].apply(json.loads)
-            models = data.iloc[:, 2].to_list()
+            models = data.loc[:, 'Models'].to_list()
             hyperparams = []
             for model in models:
                 model_info = data.loc[(data.Model == model), 'Params'].iloc[0]
@@ -37,41 +43,52 @@ class DataLoader():
         except FileNotFoundError:
             print(f"Такого файла не существует")
 
-    def save_hyperparams_from_python(self, models: list, hyperparams: list) -> str:
+    def load_hyperparams_from_python(self) -> tuple[list, list, list]:
         """
-        Метод для сохранения полученных оптимальных гиперпараметров от Python.
-        :param models: Список моделей;
-        :param hyperparams: Список гиперпараметров.
-        :return: Путь до файла с сохранёнными гиперпараметрами
+        Метод для загрузки гиперпараметров, полученных от Python
+
+        :return: Список моделей, список гиперпараметров и список версий
         """
-        data = {"Models": models, "Best_params": hyperparams}
-        df = pd.DataFrame(data)
-        df.loc[:, 'Best_params'] = df.loc[:, 'Best_params'].apply(json.dumps)
-        filepath = f"best_params_{self.filepath}"
-        df.to_csv(filepath)
-        return filepath
+        try:
+            data = pd.read_csv(self.filepath)
+            # переводим сразу из json в python-словари
+            data.loc[:, 'Params'] = data.loc[:, 'Params'].apply(json.loads)
+            models = data.loc[:, 'Models'].to_list()
+            versions = data.loc[:, 'Version'].to_list()
+            hyperparams = []
+            for model in models:
+                model_info = data.loc[(data.Model == model), 'Params'].iloc[0]
+                hyperparams.append(model_info[model])
+            return models, hyperparams, versions
+        except FileNotFoundError:
+            print(f"Такого файла не существует")
 
     def backup_hyperparams(self, models: list, hyperparams: list) -> str:
         """
         Метод для резервного копирования гиперпараметров.
+
         :param models: Список моделей;
         :param hyperparams: Список гиперпараметрой.
         :return: Путь до файла с резервной копией.
         """
-        data = {"Models": models, "Params": hyperparams}
+        current_datetime = datetime.now().strftime("%Y_%m_%d_%H_%M")
+        versions = [current_datetime] * len(models)
+        data = {"Models": models, "Params": hyperparams, "Versions": versions}
         df = pd.DataFrame(data)
         df.loc[:, 'Params'] = df.loc[:, 'Params'].apply(json.dumps)
-        filepath = f"back_up_{self.filepath}"
+        filepath = f"current_datetime_back_up_{self.filepath}"
         df.to_csv(filepath)
         return filepath
     
-    def __save_custom_model(self, model: str, params: list):
+    def __save_custom_model(self, model: str, hyperparams: list):
         """
         Метод для для сохранения гиперпараметров самописных моделей.
+
         :param model: Название модели;
-        :paran params: Гипепараметры модели.
+        :paran hyperparams: Гипепараметры модели.
         """
-        new_data = pd.DataFrame({'Models': model, 'Params': params})
+        current_datetime = datetime.now().strftime("%Y_%m_%d_%H_%M")
+        new_data = pd.DataFrame({'Models': model, 'Params': hyperparams, 'Version': current_datetime})
         # если файл существует и не пуст - читаем и добавляем данные
         if os.path.exists(self.filepath) and os.path.getsize(self.filepath) > 0:
             old_data = pd.read_csv(f"{self.filepath}.csv")
@@ -79,6 +96,86 @@ class DataLoader():
             combined_data.to_csv(f"{self.filepath}.csv", index=False)
         else:  # если файла нет или он пуст - просто сохраняем новые данные
             new_data.to_csv(f"{self.filepath}.csv", index=False)
+
+    def __get_params_from_sklearn_model(self, model_name: str, model) -> dict:
+        """
+        Метод для извлечения параметров из Sklearn моделей.
+
+        :param model_name: Название модели;
+        :param model: Экземпляр модели.
+        :return: Словарь с гиперпараметрами.
+        """
+        params = model.get_params()
+        return {"Model": model_name,
+                    "Params": params}
+    
+    def __get_params_from_statsmodels_model(self, model_name: str, model) -> dict:
+        """
+        Метод для извлечения параметров из Statsmodels моделей.
+
+        :param model_name: Название модели;
+        :param model: Экземпляр модели.
+        :return: Словарь с гиперпараметрами.
+        """
+        params = model.params
+        return {"Model": model_name,
+                    "Params": params}    
+    
+    def __get_params_from_prophet_model(self, model_name: str, model) -> dict:
+        """
+        Метод для извлечения параметров из Prophet модели.
+
+        :param model_name: Название модели;
+        :param model: Экземпляр модели.
+        :return: Словарь с гиперпараметрами.
+        """
+        params = model.params
+        return {"Model": model_name,
+                    "Params": params}   
+
+    def get_params(self, model) -> dict:
+        """
+        Метод для извлечения параметров из обученных экземпляров моделей.
+        Поддерживаются следующие модели:
+
+        "RandomForestRegressor", "ElasticNet", "HuberRegressor", "Lasso", "RANSACRegressor", 
+        "Ridge", "TheilSenRegressor", "CatBoostRegressor", "Holt", "SimpleExpSmoothing", 
+        "ExponentialSmoothing", "Prophet". 
+        
+        При использовании Sklearn моделей или Prophet необходимо передавать сам экземпляр модели.
+        
+        При использовании statsmodels необходимо передавать результат model.fit(), т.е results = model.fit() - необходимо передать results.
+        
+        :param model: Экземпляр модели.
+        :return: Словарь с гиперпараметрами.
+        """
+        if isinstance(model, RandomForestRegressor):
+            return self.__get_params_from_sklearn_model("RandomForestRegressor", model)
+        elif isinstance(model, ElasticNet):
+            return self.__get_params_from_sklearn_model("ElasticNet", model)
+        elif isinstance(model, HuberRegressor):
+            return self.__get_params_from_sklearn_model("HuberRegressor", model)
+        elif isinstance(model, Lasso):
+            return self.__get_params_from_sklearn_model("Lasso", model)
+        elif isinstance(model, RANSACRegressor):
+            return self.__get_params_from_sklearn_model("RANSACRegressor", model)
+        elif isinstance(model, Ridge):
+            return self.__get_params_from_sklearn_model("Ridge", model)
+        elif isinstance(model, TheilSenRegressor):
+            return self.__get_params_from_sklearn_model("TheilSenRegressor", model)
+        elif isinstance(model, CatBoostRegressor):
+            return self.__get_params_from_sklearn_model("CatBoostRegressor", model) # в catboost такой же метод для извлечения гиперпараметров
+        elif isinstance(model, Holt):
+            return self.__get_params_from_statsmodels_model("Holt", model)
+        elif isinstance(model, SimpleExpSmoothing):
+            return self.__get_params_from_statsmodels_model("ExpSmoothing", model)
+        elif isinstance(model, ExponentialSmoothing):
+            return self.__get_params_from_statsmodels_model("HoltWinters", model)
+        elif isinstance(model, Prophet):
+            return self.__get_params_from_prophet_model("Prophet", model)
+        else:
+            raise ValueError("Неподдерживаемая модель")
+
 
     def save_trained_model(self, model, filepath: str):
         """
@@ -89,34 +186,47 @@ class DataLoader():
         :param filepath: Путь до файла. Возможна дозапись в конец файла. Не указывать расширение файла - оно будет выбрано автоматически.
         """
         self.filepath = filepath
-        custom_models = ["croston_tsb", "rol_mean", "const"]
+        custom_models = ["croston_tsb", "rol_mean", "const", "symfit_fourier_fft", "random_forest", 
+                         "elastic_net", "huber", "lasso", "ransac", 
+                         "ridge", "theil_sen", "catboost", 
+                         "holt", "exp_smoothing", "holt_winters", 
+                         "sarima", "prophet"]
         if isinstance(model, dict):
             model_name = list(model.keys())[0] # т.к возвращается итерируемый объект
             params = list(model.values())[0]
             if model_name in custom_models:
                 self.__save_custom_model(model_name, params)
+            else:
+                raise ValueError("Неподдерживаемая модель")
         elif isinstance(model, RandomForestRegressor):
-            joblib.dump(model, f"{self.filepath}.joblib")
+            joblib.dump(model, f"RandomForestRegressor_{self.filepath}.joblib")
         elif isinstance(model, ElasticNet):
-            joblib.dump(model, f"{self.filepath}.joblib")
+            joblib.dump(model, f"ElasticNet_{self.filepath}.joblib")
         elif isinstance(model, HuberRegressor):
-            joblib.dump(model, f"{self.filepath}.joblib")
+            joblib.dump(model, f"HuberRegressor_{self.filepath}.joblib")
         elif isinstance(model, Lasso):
-            joblib.dump(model, f"{self.filepath}.joblib")
+            joblib.dump(model, f"Lasso_{self.filepath}.joblib")
         elif isinstance(model, RANSACRegressor):
-            joblib.dump(model, f"{self.filepath}.joblib")
+            joblib.dump(model, f"RANSACRegressor_{self.filepath}.joblib")
         elif isinstance(model, Ridge):
-            joblib.dump(model, f"{self.filepath}.joblib")
+            joblib.dump(model, f"Ridge_{self.filepath}.joblib")
         elif isinstance(model, TheilSenRegressor):
-            joblib.dump(model, f"{self.filepath}.joblib")
+            joblib.dump(model, f"TheilSenRegressor_{self.filepath}.joblib")
         elif isinstance(model, CatBoostRegressor):
-            model.save_model(self.filepath, foramt="cbm")
+            model.save_model(f"CatBoostRegressor_{self.filepath}", foramt="cbm")
         elif isinstance(model, Holt):
-            joblib.dump(model, f"{self.filepath}.joblib")
+            joblib.dump(model, f"Holt_{self.filepath}.joblib")
         elif isinstance(model, SimpleExpSmoothing):
-            joblib.dump(model, f"{self.filepath}.joblib")
+            joblib.dump(model, f"SimpleExpSmoothing_{self.filepath}.joblib")
         elif isinstance(model, ExponentialSmoothing):
-            joblib.dump(model, f"{self.filepath}.joblib")
+            joblib.dump(model, f"ExponentialSmoothing_{self.filepath}.joblib")
+        elif isinstance(model, SARIMAX):
+            joblib.dump(model, f"SARIMAX_{self.filepath}.joblib")
+        elif isinstance(model, Prophet):
+            with open(f'Prophet_{self.filepath}.json', 'w') as fout:
+                fout.write(model_to_json(model))
+        else:
+            raise ValueError("Неподдерживаемая модель")
                 
 
             

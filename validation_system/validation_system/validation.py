@@ -677,7 +677,7 @@ class Validation():
             case 'symfit_fourier_fft':
                 self.__symfit_fourier_fft(param)
             case _:
-                raise ValueError("Не поддерживаемая модель")
+                raise ValueError("Неподдерживаемая модель")
 
 
     def __validate_hyperparams(self):
