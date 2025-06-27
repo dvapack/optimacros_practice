@@ -13,6 +13,8 @@ from statsmodels.tsa.api import Holt, SimpleExpSmoothing, ExponentialSmoothing, 
 from prophet import Prophet
 from prophet.serialize import model_to_json
 
+from validation import Validation
+
 
 class DataLoader():
     """
@@ -24,7 +26,7 @@ class DataLoader():
         """
         self.filepath = filepath
 
-    def load_hyperparams_from_optimacros(self) -> tuple[list, list]:
+    def load_hyperparams_from_optimacros(self) -> tuple[list, list]: # tested
         """
         Метод для загрузки гиперпараметров, полученных от OptiMacros
 
@@ -37,7 +39,7 @@ class DataLoader():
             models = data.loc[:, 'Models'].to_list()
             hyperparams = []
             for model in models:
-                model_info = data.loc[(data.Model == model), 'Params'].iloc[0]
+                model_info = data.loc[(data.Models == model), 'Params'].iloc[0]
                 hyperparams.append(model_info[model])
             return models, hyperparams
         except FileNotFoundError:
@@ -63,7 +65,7 @@ class DataLoader():
         except FileNotFoundError:
             print(f"Такого файла не существует")
 
-    def backup_hyperparams(self, models: list, hyperparams: list) -> str:
+    def backup_hyperparams(self, models: list, hyperparams: list) -> str: #tested
         """
         Метод для резервного копирования гиперпараметров.
 
@@ -71,12 +73,14 @@ class DataLoader():
         :param hyperparams: Список гиперпараметрой.
         :return: Путь до файла с резервной копией.
         """
+        dir_path = os.path.dirname(self.filepath)
+        file_name = os.path.basename(self.filepath)
         current_datetime = datetime.now().strftime("%Y_%m_%d_%H_%M")
         versions = [current_datetime] * len(models)
         data = {"Models": models, "Params": hyperparams, "Versions": versions}
         df = pd.DataFrame(data)
         df.loc[:, 'Params'] = df.loc[:, 'Params'].apply(json.dumps)
-        filepath = f"current_datetime_back_up_{self.filepath}"
+        filepath = os.path.join(dir_path, f"{current_datetime}_back_up_{file_name}")
         df.to_csv(filepath)
         return filepath
     
@@ -228,5 +232,13 @@ class DataLoader():
         else:
             raise ValueError("Неподдерживаемая модель")
                 
+def main():
+    dataloader = DataLoader("/home/flowers/Uni/Practice/optimacros_practice/validation_system/test/om_models.csv")
+    models, hyperparams = dataloader.load_hyperparams_from_optimacros()
+    validator = Validation(models, hyperparams)
+    validated_data = validator.get_validated_hyperparams()
+    #list_a = ["new"]
+    #print(list(list_a))
 
-            
+if __name__ == "__main__":
+    main()
