@@ -261,7 +261,6 @@ class Validation():
         provided_step = self.__to_list(data.get("holt_step"))
         self.__check_values(provided_step, min_step, max_step, default_step, "holt_step")
 
-#### переделать метод для holt_winters
     def __holt_winters(self, data: dict):
         """
         Метод для проверки гиперпараметров модели Holt Winters
@@ -275,11 +274,29 @@ class Validation():
         # задаём стандартные значения
         default_trend_types = ["add", "mul", None]
         default_seasonal_types = ["add", "mul", None]
-        default_sesonalities = {
-            "Year": [4, 6, 12, 52, 365],
-            "Week": [7, 14],
-            "Daily": [24, 48]
-        }
+        default_sesonalities = [2, 4, 6, 12, 52, 365, 7, 14, 24, 48, 168] # указать необзодимые
+        # проверка trend_types
+        try:
+            provided_trend_types = self.__to_list(data.get("holt_winters_trend_types"))
+            self.__check_list_is_subset(default_trend_types, provided_trend_types)
+        except ValueError as e:
+            print(f"holt_winters_trend_types - {e}")
+        # проверка seasonal_types
+        try:
+            provided_seasonal_types = self.__to_list(data.get("holt_winters_seasonal_types"))
+            self.__check_list_is_subset(default_seasonal_types, provided_seasonal_types)
+        except ValueError as e:
+            print(f"holt_winters_seasonal_types - {e}")
+        # проверка seasonality
+        try:
+            provided_min_seasonality = self.__to_list(data.get("holt_winters_min_seasonality"))
+            self.__check_list_is_subset(default_sesonalities, provided_min_seasonality)
+            provided_max_seasonality = self.__to_list(data.get("holt_winters_max_seasonality"))
+            self.__check_list_is_subset(default_sesonalities, provided_max_seasonality)
+        except ValueError as e:
+            print(f"holt_winters_seasonality - {e}")
+
+
 
     def __huber(self, data: dict):
         """
@@ -771,8 +788,7 @@ class Validation():
             case 'holt':
                 self.__holt(param)
             case 'holt_winters':
-                #self.__holt_winters(param)
-                pass
+                self.__holt_winters(param)
             case 'huber':
                 self.__huber(param)
             case 'lasso':

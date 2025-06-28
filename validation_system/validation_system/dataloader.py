@@ -156,29 +156,31 @@ class DataLoader():
         :return: Словарь с гиперпараметрами.
         """
         if isinstance(model, RandomForestRegressor):
-            return self.__get_params_from_sklearn_model("RandomForestRegressor", model)
+            return self.__get_params_from_sklearn_model("random_forest", model)
         elif isinstance(model, ElasticNet):
-            return self.__get_params_from_sklearn_model("ElasticNet", model)
+            return self.__get_params_from_sklearn_model("elastic_net", model)
         elif isinstance(model, HuberRegressor):
-            return self.__get_params_from_sklearn_model("HuberRegressor", model)
+            return self.__get_params_from_sklearn_model("huber", model)
         elif isinstance(model, Lasso):
-            return self.__get_params_from_sklearn_model("Lasso", model)
+            return self.__get_params_from_sklearn_model("lasso", model)
         elif isinstance(model, RANSACRegressor):
-            return self.__get_params_from_sklearn_model("RANSACRegressor", model)
+            return self.__get_params_from_sklearn_model("ransac", model)
         elif isinstance(model, Ridge):
-            return self.__get_params_from_sklearn_model("Ridge", model)
+            return self.__get_params_from_sklearn_model("ridge", model)
         elif isinstance(model, TheilSenRegressor):
-            return self.__get_params_from_sklearn_model("TheilSenRegressor", model)
+            return self.__get_params_from_sklearn_model("theil_sen", model)
         elif isinstance(model, CatBoostRegressor):
-            return self.__get_params_from_sklearn_model("CatBoostRegressor", model) # в catboost такой же метод для извлечения гиперпараметров
+            return self.__get_params_from_sklearn_model("catboost", model) # в catboost такой же метод для извлечения гиперпараметров
         elif isinstance(model, Holt) and isinstance(model_fit, statsmodels.tsa.holtwinters.results.HoltWintersResultsWrapper):
-            return self.__get_params_from_statsmodels_model("Holt", model_fit)
+            return self.__get_params_from_statsmodels_model("holt", model_fit)
         elif isinstance(model, SimpleExpSmoothing) and isinstance(model_fit, statsmodels.tsa.holtwinters.results.HoltWintersResultsWrapper):
-            return self.__get_params_from_statsmodels_model("ExpSmoothing", model_fit)
+            return self.__get_params_from_statsmodels_model("exp_smoothing", model_fit)
         elif isinstance(model, ExponentialSmoothing) and isinstance(model_fit, statsmodels.tsa.holtwinters.results.HoltWintersResultsWrapper):
-            return self.__get_params_from_statsmodels_model("HoltWinters", model_fit)
+            return self.__get_params_from_statsmodels_model("holt_winters", model_fit)
+        elif isinstance(model, SARIMAX) and isinstance(model_fit, statsmodels.tsa.statespace.sarimax.SARIMAXResultsWrapper):
+            return self.__get_params_from_statsmodels_model("sarima", model_fit)
         elif isinstance(model, Prophet):
-            return self.__get_params_from_prophet_model("Prophet", model)
+            return self.__get_params_from_prophet_model("prophet", model)
         else:
             raise ValueError("Неподдерживаемая модель")
 
