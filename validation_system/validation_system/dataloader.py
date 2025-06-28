@@ -59,7 +59,7 @@ class DataLoader():
             versions = data.loc[:, 'Version'].to_list()
             hyperparams = []
             for model in models:
-                model_info = data.loc[(data.Model == model), 'Params'].iloc[0]
+                model_info = data.loc[(data.Models == model), 'Params'].iloc[0]
                 hyperparams.append(model_info[model])
             return models, hyperparams, versions
         except FileNotFoundError:
@@ -233,10 +233,11 @@ class DataLoader():
             raise ValueError("Неподдерживаемая модель")
                 
 def main():
-    dataloader = DataLoader("/home/flowers/Uni/Practice/optimacros_practice/validation_system/test/om_models.csv")
+    dataloader = DataLoader("/home/flowers/Uni/Practice/optimacros_practice/validation_system/test/om.csv")
     models, hyperparams = dataloader.load_hyperparams_from_optimacros()
     validator = Validation(models, hyperparams)
     validated_data = validator.get_validated_hyperparams()
+    dataloader.backup_hyperparams(validated_data[0], validated_data[1])
     #list_a = ["new"]
     #print(list(list_a))
 
