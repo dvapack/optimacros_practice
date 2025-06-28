@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.stats import ttest_ind
-from typing import Optional, Union, Dict, List
+from typing import Optional, Dict
 from statsmodels.stats.weightstats import ztest
 
 class ModelComparator:

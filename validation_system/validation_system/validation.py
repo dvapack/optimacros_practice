@@ -810,6 +810,7 @@ class Validation():
         for model, params in zip(self.models, self.hyperparams):
             try:
                 self.__validate_hyperparam(model, params)
+                print(f"Валидация гиперпараметров для модели {model} прошла успешно")
             except ValueError as e:
                 print(e)
 

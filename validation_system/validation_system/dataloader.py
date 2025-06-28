@@ -9,6 +9,7 @@ from sklearn.linear_model import ElasticNet, HuberRegressor, Lasso, \
                                 RANSACRegressor, Ridge, TheilSenRegressor
 from sklearn.ensemble import RandomForestRegressor
 from catboost import CatBoostRegressor
+import statsmodels
 from statsmodels.tsa.api import Holt, SimpleExpSmoothing, ExponentialSmoothing, SARIMAX
 from prophet import Prophet
 from prophet.serialize import model_to_json
@@ -137,7 +138,7 @@ class DataLoader():
         return {"Model": model_name,
                     "Params": params}   
 
-    def get_params(self, model) -> dict:
+    def get_params(self, model, model_fit = None) -> dict:
         """
         Метод для извлечения параметров из обученных экземпляров моделей.
         Поддерживаются следующие модели:
@@ -146,11 +147,12 @@ class DataLoader():
         "Ridge", "TheilSenRegressor", "CatBoostRegressor", "Holt", "SimpleExpSmoothing", 
         "ExponentialSmoothing", "Prophet". 
         
-        При использовании Sklearn моделей или Prophet необходимо передавать сам экземпляр модели.
+        При использовании Sklearn моделей или Prophet необходимо передавать сам экземпляр модели без model_fit
         
-        При использовании statsmodels необходимо передавать результат model.fit(), т.е results = model.fit() - необходимо передать results.
+        При использовании statsmodels необходимо передавать model и результат model.fit(), т.е results = model.fit() - необходимо передать results.
         
         :param model: Экземпляр модели.
+        :param model_fit: Результат fit() для statsmodels моделей. Необязательный параметр.
         :return: Словарь с гиперпараметрами.
         """
         if isinstance(model, RandomForestRegressor):
@@ -169,12 +171,12 @@ class DataLoader():
             return self.__get_params_from_sklearn_model("TheilSenRegressor", model)
         elif isinstance(model, CatBoostRegressor):
             return self.__get_params_from_sklearn_model("CatBoostRegressor", model) # в catboost такой же метод для извлечения гиперпараметров
-        elif isinstance(model, Holt):
-            return self.__get_params_from_statsmodels_model("Holt", model)
-        elif isinstance(model, SimpleExpSmoothing):
-            return self.__get_params_from_statsmodels_model("ExpSmoothing", model)
-        elif isinstance(model, ExponentialSmoothing):
-            return self.__get_params_from_statsmodels_model("HoltWinters", model)
+        elif isinstance(model, Holt) and isinstance(model_fit, statsmodels.tsa.holtwinters.results.HoltWintersResultsWrapper):
+            return self.__get_params_from_statsmodels_model("Holt", model_fit)
+        elif isinstance(model, SimpleExpSmoothing) and isinstance(model_fit, statsmodels.tsa.holtwinters.results.HoltWintersResultsWrapper):
+            return self.__get_params_from_statsmodels_model("ExpSmoothing", model_fit)
+        elif isinstance(model, ExponentialSmoothing) and isinstance(model_fit, statsmodels.tsa.holtwinters.results.HoltWintersResultsWrapper):
+            return self.__get_params_from_statsmodels_model("HoltWinters", model_fit)
         elif isinstance(model, Prophet):
             return self.__get_params_from_prophet_model("Prophet", model)
         else:
