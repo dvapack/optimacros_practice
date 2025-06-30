@@ -221,7 +221,7 @@ class DataLoader():
         elif isinstance(model, TheilSenRegressor):
             joblib.dump(model, f"TheilSenRegressor_{self.filepath}.joblib")
         elif isinstance(model, CatBoostRegressor):
-            model.save_model(f"CatBoostRegressor_{self.filepath}", foramt="cbm")
+            model.save_model(f"CatBoostRegressor_{self.filepath}", format="cbm")
         elif isinstance(model, Holt):
             joblib.dump(model, f"Holt_{self.filepath}.joblib")
         elif isinstance(model, SimpleExpSmoothing):
