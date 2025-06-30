@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "validation_system"
-version = "0.1.0"
+version = "0.1.1"
 description = "Пакет для валидации гиперпараметров"
 authors = [{ name = "Sergey", email = "mserg04@gmail.com" }]
 readme = "README.md"
@@ -16,14 +16,16 @@ classifiers = [
 
 dependencies = [
     "requests>=2.25.0",
-    "scklearn==1.5.2",
-    "statsmodels==0.14.4",
-    "catboost==1.2.7",
-    "prophet==1.1.6",
-    "symfit==0.5.6",
+    "scikit-learn>=1.5.2",
+    "statsmodels>=0.14.4",
+    "catboost>=1.2.7",
+    "prophet>=1.1.6",
+    "symfit>=0.5.6",
     "pandas",
     "numpy",
-    "json",
+    "scipy",
+    "joblib",
+
 ]
 
 [project.optional-dependencies]

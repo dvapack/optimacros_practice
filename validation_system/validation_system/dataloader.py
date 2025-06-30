@@ -82,7 +82,7 @@ class DataLoader():
         df = pd.DataFrame(data)
         df.loc[:, 'Params'] = df.loc[:, 'Params'].apply(json.dumps)
         filepath = os.path.join(dir_path, f"{current_datetime}_back_up_{file_name}")
-        df.to_csv(filepath)
+        df.to_csv(filepath, index=False)
         return filepath
     
     def __save_custom_model(self, model: str, hyperparams: list):
@@ -90,7 +90,7 @@ class DataLoader():
         Метод для для сохранения гиперпараметров самописных моделей.
 
         :param model: Название модели;
-        :paran hyperparams: Гипепараметры модели.
+        :param hyperparams: Гипепараметры модели.
         """
         current_datetime = datetime.now().strftime("%Y_%m_%d_%H_%M")
         new_data = pd.DataFrame({'Models': model, 'Params': hyperparams, 'Version': current_datetime})
