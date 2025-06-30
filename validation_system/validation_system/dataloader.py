@@ -14,7 +14,7 @@ from statsmodels.tsa.api import Holt, SimpleExpSmoothing, ExponentialSmoothing, 
 from prophet import Prophet
 from prophet.serialize import model_to_json
 
-from validation import Validation
+from .validation import Validation
 
 
 class DataLoader():

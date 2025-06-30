@@ -118,6 +118,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"croston_tsb - {e}")
+            print("Ошибка при проверке гиперпараметров модели Croston TSB. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_min_alpha = 0
         default_max_alpha = 1
@@ -144,7 +146,8 @@ class Validation():
         min_step = 0
         max_step = 1
         provided_step = self.__to_list(data.get("croston_tsb_step"))
-        self.__strong_check_values(provided_step, min_step, max_step, default_step, "croston_tsb_step")     
+        self.__strong_check_values(provided_step, min_step, max_step, default_step, "croston_tsb_step")
+        print("Проверка croston_tsb прошла успешно")
     
     def __elastic_net(self, data: dict):
         """
@@ -160,6 +163,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"elastic_net - {e}")
+            print("Ошибка при проверке гиперпараметров модели Elastic Net. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_min_alpha = 0
         default_max_alpha = 1
@@ -186,7 +191,8 @@ class Validation():
         min_step = 0
         max_step = 1
         provided_step = self.__to_list(data.get("elastic_net_step"))
-        self.__check_values(provided_step, min_step, max_step, default_step, "elastic_net_step")     
+        self.__check_values(provided_step, min_step, max_step, default_step, "elastic_net_step")
+        print("Проверка elastic_net прошла успешно") 
 
     def __exp_smoothing(self, data: dict):
         """
@@ -201,6 +207,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"exp_smoothing {e}")
+            print("Ошибка при проверке гиперпараметров модели Expontetial Smoothing. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_min_alpha = 0
         default_max_alpha = 1
@@ -218,6 +226,7 @@ class Validation():
         max_step = 1
         provided_step = self.__to_list(data.get("exp_smoothing_step"))
         self.__check_values(provided_step, min_step, max_step, default_step, "exp_smoothing_step")
+        print("Проверка exp_smoothing прошла успешно")
 
     def __holt(self, data: dict):
         """
@@ -233,6 +242,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"holt - {e}")
+            print("Ошибка при проверке гиперпараметров модели Holt. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_min_alpha = 0
         default_max_alpha = 1
@@ -260,6 +271,7 @@ class Validation():
         max_step = 1
         provided_step = self.__to_list(data.get("holt_step"))
         self.__check_values(provided_step, min_step, max_step, default_step, "holt_step")
+        print("Проверка holt прошла успешно")
 
     def __holt_winters(self, data: dict):
         """
@@ -267,10 +279,15 @@ class Validation():
 
         :param data: Гиперпараметры модели для валидации 
         """
-        default_params = ["holt_winters_min_seasonality", "holt_winters_max_seasonality",
-                          "holt_winters_trend_types", "holt_winters_seasonal_types"]
-        provided_params = list(data.keys())
-        self.__check_lists_equal(default_params, provided_params)
+        try:
+            default_params = ["holt_winters_min_seasonality", "holt_winters_max_seasonality",
+                            "holt_winters_trend_types", "holt_winters_seasonal_types"]
+            provided_params = list(data.keys())
+            self.__check_lists_equal(default_params, provided_params)
+        except ValueError as e:
+            print(f"holt_winters - {e}")
+            print("Ошибка при проверке гиперпараметров модели Holt Winters. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_trend_types = ["add", "mul", None]
         default_seasonal_types = ["add", "mul", None]
@@ -281,12 +298,18 @@ class Validation():
             self.__check_list_is_subset(default_trend_types, provided_trend_types)
         except ValueError as e:
             print(f"holt_winters_trend_types - {e}")
+            print("Ошибка при проверке гиперпараметров модели Holt Winters. " \
+            "Проверьте значения trend_types. Допустимые значения: add, mul, None.")
+            return
         # проверка seasonal_types
         try:
             provided_seasonal_types = self.__to_list(data.get("holt_winters_seasonal_types"))
             self.__check_list_is_subset(default_seasonal_types, provided_seasonal_types)
         except ValueError as e:
             print(f"holt_winters_seasonal_types - {e}")
+            print("Ошибка при проверке гиперпараметров модели Holt Winters. " \
+                  "Проверьте значения seasonal_types. Допустимые значения: add, mul, None.")
+            return
         # проверка seasonality
         try:
             provided_min_seasonality = self.__to_list(data.get("holt_winters_min_seasonality"))
@@ -295,6 +318,11 @@ class Validation():
             self.__check_list_is_subset(default_sesonalities, provided_max_seasonality)
         except ValueError as e:
             print(f"holt_winters_seasonality - {e}")
+            print("Ошибка при проверке гиперпараметров модели Holt Winters. " \
+                  "Проверьте значения seasonality. Допустимые значения: 2, 4, 6, 12, 52, 365, 7, 14, 24, 48, 168.")
+            return
+        print("Проверка holt_winters прошла успешно")
+        
 
 
 
@@ -310,6 +338,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"huber - {e}")
+            print("Ошибка при проверке гиперпараметров модели Huber. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_min_degrees = 1
         default_max_degrees = 1.35 # в доке sklearn это стандартное значение
@@ -321,6 +351,7 @@ class Validation():
         provided_max_degrees = self.__to_list(data.get("huber_max_degrees"))
         # проверка, чтобы max_degrees был > min_degrees
         self.__check_values(provided_max_degrees, provided_min_degrees[0], max_degrees, default_max_degrees, "huber_max_degrees")
+        print("Проверка huber прошла успешно")
 
     def __lasso(self, data: dict):
         """
@@ -335,6 +366,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"lasso - {e}")
+            print("Ошибка при проверке гиперпараметров модели Lasso. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_min_alpha = 0
         default_max_alpha = 1
@@ -352,6 +385,7 @@ class Validation():
         max_step = 1
         provided_step = self.__to_list(data.get("lasso_step"))
         self.__check_values(provided_step, min_step, max_step, default_step, "lasso_step")
+        print("Проверка lasso прошла успешно")
 
     def __polynomial(self, data: dict):
         """
@@ -365,6 +399,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"polynomial - {e}")
+            print("Ошибка при проверке гиперпараметров модели Polynomial. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_min_degrees = 0
         default_max_degrees = 2 # в доке sklearn это стандартное значение
@@ -372,10 +408,13 @@ class Validation():
         min_degrees = 0
         max_degrees = 5
         provided_min_degrees = self.__to_list(data.get("polynomial_min_degrees"))
-        self.__check_values(provided_min_degrees, min_degrees, max_degrees, default_min_degrees, "polynomial_min_degrees")
+        self.__check_values(provided_min_degrees, min_degrees, max_degrees, 
+                            default_min_degrees, "polynomial_min_degrees")
         provided_max_degrees = self.__to_list(data.get("polynomial_max_degrees"))
         # проверка, чтобы max_degrees был > min_degrees
-        self.__check_values(provided_max_degrees, provided_min_degrees[0], max_degrees, default_max_degrees, "polynomial_max_degrees")
+        self.__check_values(provided_max_degrees, provided_min_degrees[0], max_degrees, 
+                            default_max_degrees, "polynomial_max_degrees")
+        print("Проверка polynomial прошла успешно")
 
     def __ransac(self, data: dict):
         """
@@ -389,6 +428,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"ransac - {e}")
+            print("Ошибка при проверке гиперпараметров модели Ransac. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_min_degrees = 1
         default_max_degrees = 2
@@ -396,10 +437,13 @@ class Validation():
         min_degrees = 1
         max_degrees = 5
         provided_min_degrees = self.__to_list(data.get("ransac_min_degrees"))
-        self.__check_values(provided_min_degrees, min_degrees, max_degrees, default_min_degrees, "ransac_min_degrees")
+        self.__check_values(provided_min_degrees, min_degrees, max_degrees, 
+                            default_min_degrees, "ransac_min_degrees")
         provided_max_degrees = self.__to_list(data.get("ransac_max_degrees"))
         # проверка, чтобы max_degrees был > min_degrees
-        self.__check_values(provided_max_degrees, provided_min_degrees[0], max_degrees, default_max_degrees, "ransac_max_degrees")
+        self.__check_values(provided_max_degrees, provided_min_degrees[0], max_degrees, 
+                            default_max_degrees, "ransac_max_degrees")
+        print("Проверка ransac прошла успешно")
 
     def __ridge(self, data: dict):
         """
@@ -414,6 +458,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"ridge - {e}")
+            print("Ошибка при проверке гиперпараметров модели Ridge. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_min_alpha = 0
         default_max_alpha = 1
@@ -422,15 +468,18 @@ class Validation():
         min_alpha = 0
         max_alpha = 5 # в документации sklearn до бесконечности 
         provided_min_alpha = self.__to_list(data.get("ridge_min_alpha"))
-        self.__check_values(provided_min_alpha, min_alpha, max_alpha, default_min_alpha, "ridge_min_alpha")
+        self.__check_values(provided_min_alpha, min_alpha, max_alpha, 
+                            default_min_alpha, "ridge_min_alpha")
         provided_max_alpha = self.__to_list(data.get("ridge_max_alpha"))
         # проверка, чтобы max_alpha был > min_alpha
-        self.__check_values(provided_max_alpha, provided_min_alpha[0], max_alpha, default_max_alpha, "ridge_max_alpha")
+        self.__check_values(provided_max_alpha, provided_min_alpha[0], max_alpha, 
+                            default_max_alpha, "ridge_max_alpha")
         # проверка step
         min_step = 0
         max_step = 1
         provided_step = self.__to_list(data.get("ridge_step"))
         self.__check_values(provided_step, min_step, max_step, default_step, "ridge_step")
+        print("Проверка ridge прошла успешно")
 
     def __rol_mean(self, data: dict):
         """
@@ -445,6 +494,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"rol_mean - {e}")
+            print("Ошибка при проверке гиперпараметров модели Rol Mean. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_min_window_size = 1
         default_max_window_size = 10
@@ -474,6 +525,10 @@ class Validation():
             self.__check_list_is_subset(default_weights_type, provided_weigths_type)
         except ValueError as e:
             print(f"rol_mean_weights_type - {e}")
+            print("Ошибка при проверке гиперпараметров модели Rol Mean. " \
+                  "Проверьте значения weights_type. Допустимые значения: new.")
+            return
+        print("Проверка rol_mean прошла успешно")
 
     def __theil_sen(self, data: dict):
         """
@@ -487,6 +542,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"theil_sen - {e}")
+            print("Ошибка при проверке гиперпараметров модели Theil Sen. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_min_degrees = 1
         default_max_degrees = 3
@@ -500,6 +557,7 @@ class Validation():
         # проверка, чтобы max_degrees был > min_degrees
         self.__check_values(provided_max_degrees, provided_min_degrees[0], max_degrees, 
                             default_max_degrees, "theil_sen_max_degrees")
+        print("Проверка theil_sen прошла успешно")
 
     def __const(self, data: dict):
         """
@@ -513,6 +571,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"const - {e}")
+            print("Ошибка при проверке гиперпараметров модели Const. Проверьте названия параметров.")
+            return
         try:
             # проверка weights_type
             default_type = ["Median"]
@@ -521,6 +581,10 @@ class Validation():
             self.__check_list_is_subset(default_type, provided_type)
         except ValueError as e:
             print(f"const_type - {e}")
+            print("Ошибка при проверке гиперпараметров модели Const. " \
+                  "Проверьте значения type. Допустимые значения: Median.")
+            return
+        print("Проверка const прошла успешно")
   
     def __sarima(self, data: dict):
         """
@@ -536,6 +600,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"sarima - {e}")
+            print("Ошибка при проверке гиперпараметров модели Sarima. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_min_p = 0
         default_max_p = 1
@@ -597,6 +663,7 @@ class Validation():
         provided_max_Q = self.__to_list(data.get("max_Q"))
         # проверка, чтобы max_Q был > min_Q
         self.__check_values(provided_max_Q, provided_min_Q[0], max_Q, default_max_Q, "max_Q")
+        print("Проверка sarima прошла успешно")
 
     def __prophet(self, data: dict):
         """
@@ -611,6 +678,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"prophet - {e}")
+            print("Ошибка при проверке гиперпараметров модели Prophet. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_changepoint_prior_scale = 0.05
         default_seasonality_prior_scale = 5
@@ -629,9 +698,17 @@ class Validation():
                             max_seasonality_prior_scale, default_seasonality_prior_scale,
                             "seasonality_prior_scale")
         # проверка seasonality_mode
-        default_seasonality_mode = ["additive","multiplicative"]
-        provided_seasonality_mode = self.__to_list(data.get("seasonality_mode"))
-        self.__check_list_is_subset(default_seasonality_mode, provided_seasonality_mode)
+        try:
+            default_seasonality_mode = ["additive","multiplicative"]
+            provided_seasonality_mode = self.__to_list(data.get("seasonality_mode"))
+            self.__check_list_is_subset(default_seasonality_mode, provided_seasonality_mode)
+        except ValueError as e:
+            print(f"prophet_seasonality_mode - {e}")
+            print("Ошибка при проверке гиперпараметров модели Prophet. " \
+                  "Проверьте значения seasonality_mode. Допустимые значения: additive, multiplicative.")
+            return
+        print("Проверка prophet прошла успешно")
+
 
     def __is_valid_max_features(self, max_features):
         """
@@ -676,6 +753,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"random_forest - {e}")
+            print("Ошибка при проверке гиперпараметров модели Random Forest. Проверьте названия параметров.")
+            return
         # задаём стандартные значения из документации
         default_max_features = 1.0 # из документации sklearn
         default_n_estimators = 100 # из документации sklearn
@@ -709,6 +788,7 @@ class Validation():
         provided_min_samples_leaf = self.__to_list(data.get("min_samples_leaf"))
         self.__check_values(provided_min_samples_leaf, min_min_samples_leaf, max_min_samples_leaf, 
                             default_min_samples_leaf, "min_samples_leaf")
+        print("Проверка random_forest прошла успешно")
 
 
     def __catboost(self, data: dict):
@@ -723,6 +803,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"catboost - {e}")
+            print("Ошибка при проверке гиперпараметров модели Catboost. Проверьте названия параметров.")
+            return
         # задаём стандартные значения из документации
         default_learning_rate = 0.03
         default_n_estimators = 15 # в документации 1000, 
@@ -745,6 +827,7 @@ class Validation():
         max_depth = 16
         provided_depth = self.__to_list(data.get("depth"))
         self.__strong_check_values(provided_depth, min_depth, max_depth, default_depth, "depth")
+        print("Проверка catboost прошла успешно")
 
     def __symfit_fourier_fft(self, data: dict):
         """
@@ -758,6 +841,8 @@ class Validation():
             self.__check_lists_equal(default_params, provided_params)
         except ValueError as e:
             print(f"symfit_fourier_fft - {e}")
+            print("Ошибка при проверке гиперпараметров модели Symfit Fourier FFT. Проверьте названия параметров.")
+            return
         # задаём стандартные значения
         default_min_components = 1
         default_max_components = 10
@@ -771,6 +856,7 @@ class Validation():
         # проверка, чтобы max_comppnents был > min_components
         self.__check_values(provided_max_components, provided_min_components[0], max_components, 
                             default_max_components, "max_components")
+        print("Проверка symfit_fourier_fft прошла успешно")
 
     def __validate_hyperparam(self, model: str, param: dict):
         """
@@ -826,7 +912,6 @@ class Validation():
         for model, params in zip(self.models, self.hyperparams):
             try:
                 self.__validate_hyperparam(model, params)
-                print(f"Валидация гиперпараметров для модели {model} прошла успешно")
             except ValueError as e:
                 print(e)
 
