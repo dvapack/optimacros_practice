@@ -2,13 +2,191 @@ class Validation():
     """
     Класс для валидации гиперпараметров
     """
-    def __init__(self, models: list, hyperparams: list):
+    def __init__(self, models: list, hyperparams: list, default_params: dict = None):
         """
         :param models: Список моделей для валидации;
         :param hyperparams: Список соответствующих гиперпараметров для валидации
         """
         self.models = models
         self.hyperparams = hyperparams
+        self.default_params = default_params if default_params is not None else {
+            "croston_tsb": {
+                "default_min_alpha": 0,
+                "default_max_alpha": 1,
+                "default_min_beta": 0,
+                "default_max_beta": 1,
+                "default_step": 0.1,
+                "min_alpha": 0,
+                "max_alpha": 1,
+                "min_beta": 0,
+                "max_beta": 1,
+                "min_step": 0,
+                "max_step": 1
+            },
+            "elastic_net": {
+                "default_min_alpha": 0,
+                "default_max_alpha": 1,
+                "default_min_l1": 0,
+                "default_max_l1": 1,
+                "default_step": 0.05,
+                "min_alpha": 0,
+                "max_alpha": 5,
+                "min_l1": 0,
+                "max_l1": 1,
+                "min_step": 0,
+                "max_step": 1
+            },
+            "exp_smoothing": {
+                "default_min_alpha": 0,
+                "default_max_alpha": 1,
+                "default_step": 0.1,
+                "min_alpha": 0,
+                "max_alpha": 1,
+                "min_step": 0,
+                "max_step": 1
+            },
+            "holt": {
+                "default_min_alpha": 0,
+                "default_max_alpha": 1,
+                "default_min_beta": 0,
+                "default_max_beta": 1,
+                "default_step": 0.1,
+                "min_alpha": 0,
+                "max_alpha": 1,
+                "min_beta": 0,
+                "max_beta": 1,
+                "min_step": 0,
+                "max_step": 1
+            },
+            "holt_winters": {
+                "default_trend_types": ["add", "mul", None],
+                "default_seasonal_types": ["add", "mul", None],
+                "default_sesonalities": [2, 4, 6, 12, 52, 365, 7, 14, 24, 48, 168]
+            },
+            "huber": {
+                "default_min_degrees": 1,
+                "default_max_degrees": 1.35,
+                "min_degrees": 1,
+                "max_degrees": 100
+            },
+            "lasso": {
+                "default_min_alpha": 0,
+                "default_max_alpha": 1,
+                "default_step": 0.05,
+                "min_alpha": 0,
+                "max_alpha": 5,
+                "min_step": 0,
+                "max_step": 1
+            },
+            "polynomial": {
+                "default_min_degrees": 0,
+                "default_max_degrees": 2,
+                "min_degrees": 0,
+                "max_degrees": 5
+            },
+            "ransac": {
+                "default_min_degrees": 1,
+                "default_max_degrees": 2,
+                "min_degrees": 1,
+                "max_degrees": 5
+            },
+            "ridge": {
+                "default_min_alpha": 0,
+                "default_max_alpha": 1,
+                "default_step": 0.05,
+                "min_alpha": 0,
+                "max_alpha": 5,
+                "min_step": 0,
+                "max_step": 1
+            },
+            "rol_mean": {
+                "default_min_window_size": 1,
+                "default_max_window_size": 10,
+                "default_weights_coeffs": 2,
+                "default_weights_type": ["new"],
+                "min_window_size": 1,
+                "max_window_size": 10,
+                "min_weights_coeffs": 0,
+                "max_weights_coeffs": 10
+            },
+            "symfit_fourier_fft": {
+                "default_min_components": 1,
+                "default_max_components": 10,
+                "min_components": 1,
+                "max_components": 20
+            },
+            "catboost": {
+                "default_n_estimators": 100,
+                "default_learning_rate": 0.03,
+                "default_depth": None,
+                "min_learning_rate": 0,
+                "max_learning_rate": 1,
+                "min_n_estimators": 1,
+                "max_n_estimators": 1000,
+                "min_depth": 0,
+                "max_depth": 16
+            },
+            "prophet": {
+                "default_changepoint_prior_scale": 0.05,
+                "default_seasonality_prior_scale": 5,
+                "default_seasonality_mode": ["additive", "multiplicative"],
+                "min_changepoint_prior_scale": 0.001,
+                "max_changepoint_prior_scale": 0.5,
+                "min_seasonality_prior_scale": 0.01,
+                "max_seasonality_prior_scale": 10
+            },
+            "random_forest": {
+                "default_n_estimators": 100,
+                "default_min_samples_split": 2,
+                "default_max_depth": None,
+                "default_max_features": 1.0,
+                "default_min_samples_leaf": 1,
+                "min_n_estimators": 1,
+                "max_n_estimators": 100,
+                "min_max_depth": 1,
+                "max_max_depth": 1000,
+                "min_min_samples_split": 1,
+                "max_min_samples_split": 100,
+                "min_min_samples_leaf": 1,
+                "max_min_samples_leaf": 100
+            },
+            "theil_sen": {
+                "default_min_degrees": 1,
+                "default_max_degrees": 2,
+                "min_degrees": 1,
+                "max_degrees": 5
+            },
+            "const": {
+                "default_type": ["Median"]
+            },
+            "sarima": {
+                "default_min_p": 0,
+                "default_max_p": 1,
+                "default_min_d": 0,
+                "default_max_d": 1,
+                "default_min_q": 0,
+                "default_max_q": 1,
+                "default_min_P": 0,
+                "default_max_P": 1,
+                "default_min_D": 0,
+                "default_max_D": 1,
+                "default_min_Q": 0,
+                "default_max_Q": 1,
+                "min_p": 0,
+                "max_p": 1,
+                "min_d": 0,
+                "max_d": 1,
+                "min_q": 0,
+                "max_q": 1,
+                "min_P": 0,
+                "max_P": 1,
+                "min_D": 0,
+                "max_D": 1,
+                "min_Q": 0,
+                "max_Q": 1
+            }
+        }
+
 
     def __to_list(self, value) -> list:
         """
@@ -121,30 +299,31 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Croston TSB. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_min_alpha = 0
-        default_max_alpha = 1
-        default_min_beta = 0
-        default_max_beta = 1
-        default_step = 0.1
+        default_params = self.default_params["croston_tsb"]
+        default_min_alpha = default_params["default_min_alpha"]
+        default_max_alpha = default_params["default_max_alpha"]
+        default_min_beta = default_params["default_min_beta"]
+        default_max_beta = default_params["default_max_beta"]
+        default_step = default_params["default_step"]
         # проверка alpha
-        min_alpha = 0
-        max_alpha = 1
+        min_alpha = default_params["min_alpha"]
+        max_alpha = default_params["max_alpha"]
         provided_min_alpha = self.__to_list(data.get("croston_tsb_min_alpha"))
         self.__check_values(provided_min_alpha, min_alpha, max_alpha, default_min_alpha, "croston_tsb_min_alpha")
         provided_max_alpha = self.__to_list(data.get("croston_tsb_max_alpha"))
         # проверка, чтобы max_alpha был > min_alpha
         self.__check_values(provided_max_alpha, provided_min_alpha[0], max_alpha, default_max_alpha, "croston_tsb_max_alpha")
         # проверка beta
-        min_beta = 0
-        max_beta = 1
+        min_beta = default_params["min_beta"]
+        max_beta = default_params["max_beta"]
         provided_min_beta = self.__to_list(data.get("croston_tsb_min_beta"))
         self.__check_values(provided_min_beta, min_beta, max_beta, default_min_beta, "croston_tsb_min_beta")
         provided_max_beta = self.__to_list(data.get("croston_tsb_max_beta"))
         # проверка, чтобы max_beta был > min_beta
         self.__check_values(provided_max_beta, provided_min_beta[0], max_beta, default_max_beta, "croston_tsb_max_beta")
         # проверка step
-        min_step = 0
-        max_step = 1
+        min_step = default_params["min_step"]
+        max_step = default_params["max_step"]
         provided_step = self.__to_list(data.get("croston_tsb_step"))
         self.__strong_check_values(provided_step, min_step, max_step, default_step, "croston_tsb_step")
         print("Проверка croston_tsb прошла успешно")
@@ -166,30 +345,31 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Elastic Net. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_min_alpha = 0
-        default_max_alpha = 1
-        default_min_l1 = 0
-        default_max_l1 = 1
-        default_step = 0.05
+        default_params = self.default_params["elastic_net"]
+        default_min_alpha = default_params["default_min_alpha"]
+        default_max_alpha = default_params["default_max_alpha"]
+        default_min_l1 = default_params["default_min_l1"]
+        default_max_l1 = default_params["default_max_l1"]
+        default_step = default_params["default_step"]
         # проверка alpha
-        min_alpha = 0
-        max_alpha = 5 # в документации sklearn до бесконечности
+        min_alpha = default_params["min_alpha"]
+        max_alpha = default_params["max_alpha"] # в документации sklearn до бесконечности
         provided_min_alpha = self.__to_list(data.get("elastic_net_min_alpha"))
         self.__check_values(provided_min_alpha, min_alpha, max_alpha, default_min_alpha, "elastic_net_min_alpha")
         provided_max_alpha = self.__to_list(data.get("elastic_net_max_alpha"))
         # проверка, чтобы max_alpha был > min_alpha
         self.__check_values(provided_max_alpha, provided_min_alpha[0], max_alpha, default_max_alpha, "elastic_net_max_alpha")
         # проверка l1
-        min_l1 = 0
-        max_l1 = 1
+        min_l1 = default_params["min_l1"]
+        max_l1 = default_params["max_l1"]
         provided_min_l1 = self.__to_list(data.get("elastic_net_min_l1"))
         self.__check_values(provided_min_l1, min_l1, max_l1, default_min_l1, "elastic_net_min_l1")
         provided_max_l1 = self.__to_list(data.get("elastic_net_max_l1"))
         # проверка, чтобы max_l1 был > min_l1
         self.__check_values(provided_max_l1, provided_min_l1[0], max_l1, default_max_l1, "elastic_net_max_l1")
         # проверка step
-        min_step = 0
-        max_step = 1
+        min_step = default_params["min_step"]
+        max_step = default_params["max_step"]
         provided_step = self.__to_list(data.get("elastic_net_step"))
         self.__check_values(provided_step, min_step, max_step, default_step, "elastic_net_step")
         print("Проверка elastic_net прошла успешно") 
@@ -210,20 +390,21 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Expontetial Smoothing. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_min_alpha = 0
-        default_max_alpha = 1
-        default_step = 0.1
+        default_params = self.default_params["exp_smoothing"]
+        default_min_alpha = default_params["default_min_alpha"]
+        default_max_alpha = default_params["default_max_alpha"]
+        default_step = default_params["default_step"]
         # проверка alpha
-        min_alpha = 0
-        max_alpha = 1
+        min_alpha = default_params["min_alpha"]
+        max_alpha = default_params["max_alpha"]
         provided_min_alpha = self.__to_list(data.get("exp_smoothing_min_alpha"))
         self.__check_values(provided_min_alpha, min_alpha, max_alpha, default_min_alpha, "exp_smoothing_min_alpha")
         provided_max_alpha = self.__to_list(data.get("exp_smoothing_max_alpha"))
         # проверка, чтобы max_alpha был > min_alpha
         self.__check_values(provided_max_alpha, provided_min_alpha[0], max_alpha, default_max_alpha, "exp_smoothing_max_alpha")
         # проверка step
-        min_step = 0
-        max_step = 1
+        min_step = default_params["min_step"]
+        max_step = default_params["max_step"]
         provided_step = self.__to_list(data.get("exp_smoothing_step"))
         self.__check_values(provided_step, min_step, max_step, default_step, "exp_smoothing_step")
         print("Проверка exp_smoothing прошла успешно")
@@ -245,30 +426,31 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Holt. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_min_alpha = 0
-        default_max_alpha = 1
-        default_min_beta = 0
-        default_max_beta = 1
-        default_step = 0.1
+        default_params = self.default_params["holt"]
+        default_min_alpha = default_params["default_min_alpha"]
+        default_max_alpha = default_params["default_max_alpha"]
+        default_min_beta = default_params["default_min_beta"]
+        default_max_beta = default_params["default_max_beta"]
+        default_step = default_params["default_step"]
         # проверка alpha
-        min_alpha = 0
-        max_alpha = 1
+        min_alpha = default_params["min_alpha"]
+        max_alpha = default_params["max_alpha"]
         provided_min_alpha = self.__to_list(data.get("holt_min_alpha"))
         self.__check_values(provided_min_alpha, min_alpha, max_alpha, default_min_alpha, "holt_min_alpha")
         provided_max_alpha = self.__to_list(data.get("holt_max_alpha"))
         # проверка, чтобы max_alpha был > min_alpha
         self.__check_values(provided_max_alpha, provided_min_alpha[0], max_alpha, default_max_alpha, "holt_max_alpha")
         # проверка beta
-        min_beta = 0
-        max_beta = 1
+        min_beta = default_params["min_beta"]
+        max_beta = default_params["max_beta"]
         provided_min_beta = self.__to_list(data.get("holt_min_beta"))
         self.__check_values(provided_min_beta, min_beta, max_beta, default_min_beta, "holt_min_beta")
         provided_max_beta = self.__to_list(data.get("holt_max_beta"))
         # проверка, чтобы max_beta был > min_beta
         self.__check_values(provided_max_beta, provided_min_beta[0], max_beta, default_max_beta, "holt_max_beta")
         # проверка step
-        min_step = 0
-        max_step = 1
+        min_step = default_params["min_step"]
+        max_step = default_params["max_step"]
         provided_step = self.__to_list(data.get("holt_step"))
         self.__check_values(provided_step, min_step, max_step, default_step, "holt_step")
         print("Проверка holt прошла успешно")
@@ -289,9 +471,10 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Holt Winters. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_trend_types = ["add", "mul", None]
-        default_seasonal_types = ["add", "mul", None]
-        default_sesonalities = [2, 4, 6, 12, 52, 365, 7, 14, 24, 48, 168] # указать необзодимые
+        default_params = self.default_params["holt_winters"]
+        default_trend_types = default_params["default_trend_types"]
+        default_seasonal_types = default_params["default_seasonal_types"]
+        default_sesonalities = default_params["default_sesonalities"]
         # проверка trend_types
         try:
             provided_trend_types = self.__to_list(data.get("holt_winters_trend_types"))
@@ -341,11 +524,12 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Huber. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_min_degrees = 1
-        default_max_degrees = 1.35 # в доке sklearn это стандартное значение
-        # проверка alpha
-        min_degrees = 1
-        max_degrees = 100
+        default_params = self.default_params["huber"]
+        default_min_degrees = default_params["default_min_degrees"]
+        default_max_degrees = default_params["default_max_degrees"]
+        # проверка degrees
+        min_degrees = default_params["min_degrees"]
+        max_degrees = default_params["max_degrees"]
         provided_min_degrees = self.__to_list(data.get("huber_min_degrees"))
         self.__check_values(provided_min_degrees, min_degrees, max_degrees, default_min_degrees, "huber_min_degrees")
         provided_max_degrees = self.__to_list(data.get("huber_max_degrees"))
@@ -369,20 +553,21 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Lasso. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_min_alpha = 0
-        default_max_alpha = 1
-        default_step = 0.05
+        default_params = self.default_params["lasso"]
+        default_min_alpha = default_params["default_min_alpha"]
+        default_max_alpha = default_params["default_max_alpha"]
+        default_step = default_params["default_step"]
         # проверка alpha
-        min_alpha = 0
-        max_alpha = 5 # в документации sklearn до бесконечности 
+        min_alpha = default_params["min_alpha"]
+        max_alpha = default_params["max_alpha"]
         provided_min_alpha = self.__to_list(data.get("lasso_min_alpha"))
         self.__check_values(provided_min_alpha, min_alpha, max_alpha, default_min_alpha, "lasso_min_alpha")
         provided_max_alpha = self.__to_list(data.get("lasso_max_alpha"))
         # проверка, чтобы max_alpha был > min_alpha
         self.__check_values(provided_max_alpha, provided_min_alpha[0], max_alpha, default_max_alpha, "lasso_max_alpha")
         # проверка step
-        min_step = 0
-        max_step = 1
+        min_step = default_params["min_step"]
+        max_step = default_params["max_step"]
         provided_step = self.__to_list(data.get("lasso_step"))
         self.__check_values(provided_step, min_step, max_step, default_step, "lasso_step")
         print("Проверка lasso прошла успешно")
@@ -402,11 +587,12 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Polynomial. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_min_degrees = 0
-        default_max_degrees = 2 # в доке sklearn это стандартное значение
+        default_params = self.default_params["polynomial"]
+        default_min_degrees = default_params["default_min_degrees"]
+        default_max_degrees = default_params["default_max_degrees"]
         # проверка alpha
-        min_degrees = 0
-        max_degrees = 5
+        min_degrees = default_params["min_degrees"]
+        max_degrees = default_params["max_degrees"]
         provided_min_degrees = self.__to_list(data.get("polynomial_min_degrees"))
         self.__check_values(provided_min_degrees, min_degrees, max_degrees, 
                             default_min_degrees, "polynomial_min_degrees")
@@ -431,11 +617,12 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Ransac. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_min_degrees = 1
-        default_max_degrees = 2
+        default_params = self.default_params["ransac"]
+        default_min_degrees = default_params["default_min_degrees"]
+        default_max_degrees = default_params["default_max_degrees"]
         # проверка alpha
-        min_degrees = 1
-        max_degrees = 5
+        min_degrees = default_params["min_degrees"]
+        max_degrees = default_params["max_degrees"]
         provided_min_degrees = self.__to_list(data.get("ransac_min_degrees"))
         self.__check_values(provided_min_degrees, min_degrees, max_degrees, 
                             default_min_degrees, "ransac_min_degrees")
@@ -461,12 +648,13 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Ridge. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_min_alpha = 0
-        default_max_alpha = 1
-        default_step = 0.05
+        default_params = self.default_params["ridge"]
+        default_min_alpha = default_params["default_min_alpha"]
+        default_max_alpha = default_params["default_max_alpha"]
+        default_step = default_params["default_step"]
         # проверка alpha
-        min_alpha = 0
-        max_alpha = 5 # в документации sklearn до бесконечности 
+        min_alpha = default_params["min_alpha"]
+        max_alpha = default_params["max_alpha"] # в документации sklearn до бесконечности
         provided_min_alpha = self.__to_list(data.get("ridge_min_alpha"))
         self.__check_values(provided_min_alpha, min_alpha, max_alpha, 
                             default_min_alpha, "ridge_min_alpha")
@@ -475,8 +663,8 @@ class Validation():
         self.__check_values(provided_max_alpha, provided_min_alpha[0], max_alpha, 
                             default_max_alpha, "ridge_max_alpha")
         # проверка step
-        min_step = 0
-        max_step = 1
+        min_step = default_params["min_step"]
+        max_step = default_params["max_step"]
         provided_step = self.__to_list(data.get("ridge_step"))
         self.__check_values(provided_step, min_step, max_step, default_step, "ridge_step")
         print("Проверка ridge прошла успешно")
@@ -497,12 +685,13 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Rol Mean. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_min_window_size = 1
-        default_max_window_size = 10
-        default_weights_coeffs = 2
+        default_params = self.default_params["rol_mean"]
+        default_min_window_size = default_params["default_min_window_size"]
+        default_max_window_size = default_params["default_max_window_size"]
+        default_weights_coeffs = default_params["default_weights_coeffs"]
         # проверка window size
-        min_window_size = 1
-        max_windows_size = 10 
+        min_window_size = default_params["min_window_size"]
+        max_windows_size = default_params["max_window_size"]
         provided_min_window_size = self.__to_list(data.get("rol_mean_min_window_size"))
         self.__check_values(provided_min_window_size, min_window_size, max_windows_size, 
                             default_min_window_size, "rol_mean_min_window_size")
@@ -512,8 +701,8 @@ class Validation():
                             max_windows_size, default_max_window_size,
                             "rol_mean_max_window_size")
         # проверка weight_coeffs
-        min_weight_coeffs = 0
-        max_weight_coeffs = 10 # поменять значение после ресерча
+        min_weight_coeffs = default_params["min_weights_coeffs"]
+        max_weight_coeffs = default_params["max_weights_coeffs"]
         provided_weight_coeffs = self.__to_list(data.get("rol_mean_weights_coeffs"))
         self.__check_values(provided_weight_coeffs, min_weight_coeffs, max_weight_coeffs, 
                             default_weights_coeffs, "rol_mean_weights_coeffs")
@@ -545,11 +734,12 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Theil Sen. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_min_degrees = 1
-        default_max_degrees = 3
-        # проверка alpha
-        min_degrees = 1
-        max_degrees = 5
+        default_params = self.default_params["theil_sen"]
+        default_min_degrees = default_params["default_min_degrees"]
+        default_max_degrees = default_params["default_max_degrees"]
+        # проверка degrees
+        min_degrees = default_params["min_degrees"]
+        max_degrees = default_params["max_degrees"]
         provided_min_degrees = self.__to_list(data.get("theil_sen_min_degrees"))
         self.__check_values(provided_min_degrees, min_degrees, max_degrees, 
                             default_min_degrees, "theil_sen_min_degrees")
@@ -574,8 +764,9 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Const. Проверьте названия параметров.")
             return
         try:
+            default_params = self.default_params["const"]
             # проверка weights_type
-            default_type = ["Median"]
+            default_type = default_params["default_type"]
             provided_type = self.__to_list(data.get("type"))
             # здесь необходимо определить логику - какие есть допустимые значения и на что заменять в случае несоответствия
             self.__check_list_is_subset(default_type, provided_type)
@@ -603,61 +794,62 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Sarima. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_min_p = 0
-        default_max_p = 1
-        default_min_d = 0
-        default_max_d = 1
-        default_min_q = 0
-        default_max_q = 1
-        default_min_P = 0
-        default_max_P = 1
-        default_min_D = 0
-        default_max_D = 1
-        default_min_Q = 0
-        default_max_Q = 1
+        default_params = self.default_params["sarima"]
+        default_min_p = default_params["default_min_p"]
+        default_max_p = default_params["default_max_p"]
+        default_min_d = default_params["default_min_d"]
+        default_max_d = default_params["default_max_d"]
+        default_min_q = default_params["default_min_q"]
+        default_max_q = default_params["default_max_q"]
+        default_min_P = default_params["default_min_P"]
+        default_max_P = default_params["default_max_P"]
+        default_min_D = default_params["default_min_D"]
+        default_max_D = default_params["default_max_D"]
+        default_min_Q = default_params["default_min_Q"]
+        default_max_Q = default_params["default_max_Q"]
         # проверка p
-        min_p = 0
-        max_p = 1
+        min_p = default_params["min_p"]
+        max_p = default_params["max_p"]
         provided_min_p = self.__to_list(data.get("min_p"))
         self.__check_values(provided_min_p, min_p, max_p, default_min_p, "min_p")
         provided_max_p = self.__to_list(data.get("max_p"))
         # проверка, чтобы max_p был > min_p
         self.__check_values(provided_max_p, provided_min_p[0], max_p, default_max_p, "max_p")
         # проверка d
-        min_d = 0
-        max_d = 1
+        min_d = default_params["min_d"]
+        max_d = default_params["max_d"]
         provided_min_d = self.__to_list(data.get("min_d"))
         self.__check_values(provided_min_d, min_d, max_d, default_min_d, "min_d")
         provided_max_d = self.__to_list(data.get("max_d"))
         # проверка, чтобы max_d был > min_d
         self.__check_values(provided_max_d, provided_min_d[0], max_d, default_max_d, "max_d")
         # проверка q
-        min_q = 0
-        max_q = 1
+        min_q = default_params["min_q"]
+        max_q = default_params["max_q"]
         provided_min_q = self.__to_list(data.get("min_q"))
         self.__check_values(provided_min_q, min_q, max_q, default_min_q, "min_q")
         provided_max_q = self.__to_list(data.get("max_q"))
         # проверка, чтобы max_q был > min_q
         self.__check_values(provided_max_q, provided_min_q[0], max_q, default_max_q, "max_q")
         # проверка P
-        min_P = 0
-        max_P = 1
+        min_P = default_params["min_P"]
+        max_P = default_params["max_P"]
         provided_min_P = self.__to_list(data.get("min_P"))
         self.__check_values(provided_min_P, min_P, max_P, default_min_P, "min_P")
         provided_max_P = self.__to_list(data.get("max_P"))
         # проверка, чтобы max_P был > min_P
         self.__check_values(provided_max_P, provided_min_P[0], max_P, default_max_P, "max_P")
         # проверка D
-        min_D = 0
-        max_D = 1
+        min_D = default_params["min_D"]
+        max_D = default_params["max_D"]
         provided_min_D = self.__to_list(data.get("min_D"))
         self.__check_values(provided_min_D, min_D, max_D, default_min_D, "min_D")
         provided_max_D = self.__to_list(data.get("max_D"))
         # проверка, чтобы max_D был > min_D
         self.__check_values(provided_max_D, provided_min_D[0], max_D, default_max_D, "max_D")
         # проверка Q
-        min_Q = 0
-        max_Q = 1
+        min_Q = default_params["min_Q"]
+        max_Q = default_params["max_Q"]
         provided_min_Q = self.__to_list(data.get("min_Q"))
         self.__check_values(provided_min_Q, min_Q, max_Q, default_min_Q, "min_Q")
         provided_max_Q = self.__to_list(data.get("max_Q"))
@@ -681,25 +873,26 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Prophet. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_changepoint_prior_scale = 0.05
-        default_seasonality_prior_scale = 5
+        default_params = self.default_params["prophet"]
+        default_changepoint_prior_scale = default_params["default_changepoint_prior_scale"]
+        default_seasonality_prior_scale = default_params["default_seasonality_prior_scale"]
         # проверка changepoint_prior_scale
-        min_changepoint_prior_scale = 0.000001
-        max_changepoint_prior_scale = 0.7
+        min_changepoint_prior_scale = default_params["min_changepoint_prior_scale"]
+        max_changepoint_prior_scale = default_params["max_changepoint_prior_scale"] # в документации Prophet до бесконечности
         provided_changepoint_prior_scale = self.__to_list(data.get("changepoint_prior_scale"))
         self.__check_values(provided_changepoint_prior_scale, min_changepoint_prior_scale, 
                             max_changepoint_prior_scale, default_changepoint_prior_scale, 
                             "changepoint_prior_scale")
         # проверка seasonality_prior_scale
-        min_seasonality_prior_scale = 0.000001
-        max_seasonality_prior_scale = 100
+        min_seasonality_prior_scale = default_params["min_seasonality_prior_scale"]
+        max_seasonality_prior_scale = default_params["max_seasonality_prior_scale"] # в документации Prophet до бесконечности
         provided_seasonality_prior_scale = self.__to_list(data.get("seasonality_prior_scale"))
         self.__check_values(provided_seasonality_prior_scale, min_seasonality_prior_scale, 
                             max_seasonality_prior_scale, default_seasonality_prior_scale,
                             "seasonality_prior_scale")
         # проверка seasonality_mode
         try:
-            default_seasonality_mode = ["additive","multiplicative"]
+            default_seasonality_mode = default_params["default_seasonality_mode"]
             provided_seasonality_mode = self.__to_list(data.get("seasonality_mode"))
             self.__check_list_is_subset(default_seasonality_mode, provided_seasonality_mode)
         except ValueError as e:
@@ -756,35 +949,36 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Random Forest. Проверьте названия параметров.")
             return
         # задаём стандартные значения из документации
-        default_max_features = 1.0 # из документации sklearn
-        default_n_estimators = 100 # из документации sklearn
-        default_max_depth = None # из документации sklearn
-        default_min_samples_split = 2 # из документации sklearn
-        default_min_samples_leaf = 1 # из документации sklearn
+        default_params = self.default_params["random_forest"]
+        default_max_features = default_params["default_max_features"]
+        default_n_estimators = default_params["default_n_estimators"]
+        default_max_depth = default_params["default_max_depth"]
+        default_min_samples_split = default_params["default_min_samples_split"]
+        default_min_samples_leaf = default_params["default_min_samples_leaf"]
         # проверка max_features
         # возможные принимаемые значения {“sqrt”, “log2”, None}, int or float, default=1.0
         provided_max_features = self.__to_list(data.get("max_features"))
         self.__check_max_features_values(provided_max_features, default_max_features)
         # проверка n_estimators
-        min_n_estimators = 1
-        max_n_estimators = 100
+        min_n_estimators = default_params["min_n_estimators"]
+        max_n_estimators = default_params["max_n_estimators"]
         provided_n_estimators = self.__to_list(data.get("n_estimators"))
         self.__check_values(provided_n_estimators, min_n_estimators, max_n_estimators, 
                                    default_n_estimators, "n_estimators")
         # проверка max_depth
-        min_max_depth = 1
-        max_max_depth = 1000
+        min_max_depth = default_params["min_max_depth"]
+        max_max_depth = default_params["max_max_depth"]
         provided_depth = self.__to_list(data.get("max_depth"))
         self.__check_values(provided_depth, min_max_depth, max_max_depth, default_max_depth, "max_depth")
         # проверка min_samples_split
-        min_min_samples_split = 1
-        max_min_samples_split = 100
+        min_min_samples_split = default_params["min_min_samples_split"]
+        max_min_samples_split = default_params["max_min_samples_split"]
         provided_min_samples_split = self.__to_list(data.get("min_samples_split"))
         self.__check_values(provided_min_samples_split, min_min_samples_split, max_min_samples_split, 
                             default_min_samples_split, "min_samples_split")
         # проверка min_samples_leaf
-        min_min_samples_leaf = 1
-        max_min_samples_leaf = 100
+        min_min_samples_leaf = default_params["min_min_samples_leaf"]
+        max_min_samples_leaf = default_params["max_min_samples_leaf"]
         provided_min_samples_leaf = self.__to_list(data.get("min_samples_leaf"))
         self.__check_values(provided_min_samples_leaf, min_min_samples_leaf, max_min_samples_leaf, 
                             default_min_samples_leaf, "min_samples_leaf")
@@ -806,25 +1000,25 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Catboost. Проверьте названия параметров.")
             return
         # задаём стандартные значения из документации
-        default_learning_rate = 0.03
-        default_n_estimators = 15 # в документации 1000, 
-        # но по материалам, которые мне скинули - больше 30 не используется. Поэтому поставил среднее в 15
-        default_depth = 6
+        default_params = self.default_params["catboost"]
+        default_learning_rate = default_params["default_learning_rate"]
+        default_n_estimators = default_params["default_n_estimators"]
+        default_depth = default_params["default_depth"]
         # проверка learning_rate
-        min_learning_rate = 0
-        max_learning_rate = 1
+        min_learning_rate = default_params["min_learning_rate"]
+        max_learning_rate = default_params["max_learning_rate"]
         provided_learning_rate = self.__to_list(data.get("learning_rate"))
         self.__strong_check_values(provided_learning_rate, min_learning_rate, max_learning_rate, 
                                    default_learning_rate, "learning_rate")
         # проверка n_estimators
-        min_n_estimators = 1
-        max_n_estimators = 50
+        min_n_estimators = default_params["min_n_estimators"]
+        max_n_estimators = default_params["max_n_estimators"]
         provided_n_estimators = self.__to_list(data.get("n_estimators"))
         self.__check_values(provided_n_estimators, min_n_estimators, max_n_estimators, 
                                    default_n_estimators, "n_estimators")
         # проверка depth
-        min_depth = 0
-        max_depth = 16
+        min_depth = default_params["min_depth"]
+        max_depth = default_params["max_depth"]
         provided_depth = self.__to_list(data.get("depth"))
         self.__strong_check_values(provided_depth, min_depth, max_depth, default_depth, "depth")
         print("Проверка catboost прошла успешно")
@@ -844,11 +1038,12 @@ class Validation():
             print("Ошибка при проверке гиперпараметров модели Symfit Fourier FFT. Проверьте названия параметров.")
             return
         # задаём стандартные значения
-        default_min_components = 1
-        default_max_components = 10
+        default_params = self.default_params["symfit_fourier_fft"]
+        default_min_components = default_params["default_min_components"]
+        default_max_components = default_params["default_max_components"]
         # проверка components
-        min_components = 1
-        max_components = 20
+        min_components = default_params["min_components"]
+        max_components = default_params["max_components"]
         provided_min_components = self.__to_list(data.get("min_components"))
         self.__check_values(provided_min_components, min_components, max_components, 
                             default_min_components, "min_components")

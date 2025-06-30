@@ -27,7 +27,7 @@ class DataLoader():
         """
         self.filepath = filepath
 
-    def load_hyperparams_from_optimacros(self) -> tuple[list, list]: # tested
+    def load_hyperparams_from_optimacros(self) -> tuple[list, list]:
         """
         Метод для загрузки гиперпараметров, полученных от OptiMacros
 
@@ -46,27 +46,24 @@ class DataLoader():
         except FileNotFoundError:
             print(f"Такого файла не существует")
 
-    def load_hyperparams_from_python(self) -> tuple[list, list, list]:
+    def load_default_hyperparams(self, filepath: str) -> tuple[list, list]:
         """
-        Метод для загрузки гиперпараметров, полученных от Python
+        Метод для загрузки стандартных значений гиперпараметров.
 
-        :return: Список моделей, список гиперпараметров и список версий
+        :param filepath: Путь до json файла со стандартными значениями гиперпараметров
+        :return: Кортеж из моделей и значений гиперпараметров.
         """
         try:
-            data = pd.read_csv(self.filepath)
-            # переводим сразу из json в python-словари
-            data.loc[:, 'Params'] = data.loc[:, 'Params'].apply(json.loads)
-            models = data.loc[:, 'Models'].to_list()
-            versions = data.loc[:, 'Version'].to_list()
-            hyperparams = []
-            for model in models:
-                model_info = data.loc[(data.Models == model), 'Params'].iloc[0]
-                hyperparams.append(model_info[model])
-            return models, hyperparams, versions
+            with open(filepath, 'r') as file:
+                data = json.load(file)
+            models = list(data.keys())
+            hyperparams = [data[model] for model in models]
+            return models, hyperparams
         except FileNotFoundError:
             print(f"Такого файла не существует")
 
-    def backup_hyperparams(self, models: list, hyperparams: list) -> str: #tested
+
+    def backup_hyperparams(self, models: list, hyperparams: list) -> str:
         """
         Метод для резервного копирования гиперпараметров.
 
@@ -84,6 +81,8 @@ class DataLoader():
         filepath = os.path.join(dir_path, f"{current_datetime}_back_up_{file_name}")
         df.to_csv(filepath, index=False)
         return filepath
+    
+
     
     def __save_custom_model(self, model: str, hyperparams: list):
         """
